@@ -25,11 +25,11 @@ CYBER-COCKPIT is designed as a next-generation personal AI workspace where users
 # 📸 UI Preview
 
 ## Main Interface
-(Add screenshot here)
 
-```md
+
+
 ![UI Screenshot](frontend/assets/images/ui-preview.png)
-```
+
 
 ---
 

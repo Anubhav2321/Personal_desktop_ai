@@ -1,0 +1,558 @@
+/* =========================================
+   🚀 PROFESSIONAL SCI-FI PALETTE
+   ========================================= */
+:root {
+    --primary-blue: #00f3ff; /* Cyberpunk Neon Cyan */
+    --accent-blue: #0ea5e9;
+    --text-main: #f8fafc;
+    --text-muted: #64748b;
+    --border-subtle: rgba(0, 243, 255, 0.15);
+    --danger-red: #ef4444;
+    --recording-red: #ff2d55;
+}
+
+/* Utility Colors */
+.text-cyan { color: var(--primary-blue); text-shadow: 0 0 5px rgba(0, 243, 255, 0.4); }
+.text-green { color: #10b981; text-shadow: 0 0 5px rgba(16, 185, 129, 0.4); }
+.text-red { color: #ef4444; }
+.text-muted { color: var(--text-muted); font-size: 0.85rem; }
+
+/* =========================================
+   💬 TERMINAL CHAT DISPLAY & INPUT
+   ========================================= */
+.chat-display {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-main);
+    height: 0;
+    min-height: 0;
+}
+
+/* Input Section */
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px 15px;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#terminal-input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.95rem;
+    outline: none;
+}
+
+#terminal-input::placeholder {
+    color: rgba(100, 116, 139, 0.5);
+}
+
+/* Clean Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0, 243, 255, 0.2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0, 243, 255, 0.5); }
+
+/* =========================================
+   🗂️ VAULT AND MONITOR CARDS
+   ========================================= */
+.cyber-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin: 12px 0;
+}
+
+.snippet-card {
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    background: rgba(0, 243, 255, 0.02);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.snippet-card:hover {
+    background: rgba(0, 243, 255, 0.05);
+    border-color: rgba(0, 243, 255, 0.4);
+    transform: translateX(5px);
+}
+
+/* =========================================
+   🚀 NEW CYBERPUNK RADAR CORE VFX
+   ========================================= */
+.ai-core-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+    padding-bottom: 20px;
+}
+
+.ai-core-header h2 {
+    font-size: 0.85rem;
+    color: var(--primary-blue);
+    letter-spacing: 4px;
+    margin-top: 25px;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+
+/* Quantum Core Container */
+.quantum-core {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background grid circle */
+.quantum-core::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px dashed rgba(0, 243, 255, 0.3);
+    animation: spinLeft 15s linear infinite;
+}
+
+/* The Radar Sweep Effect */
+.radar-sweep {
+    position: absolute;
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 70%, rgba(0, 243, 255, 0.7) 100%);
+    animation: radarSpin 2s linear infinite;
+}
+
+/* Hollow out the radar to make it a ring */
+.radar-sweep::after {
+    content: '';
+    position: absolute;
+    top: 4px; left: 4px; right: 4px; bottom: 4px;
+    background: #040914; /* Matches panel background */
+    border-radius: 50%;
+}
+
+/* Inner Dotted Data Ring */
+.data-ring {
+    position: absolute;
+    width: 65%;
+    height: 65%;
+    border: 2px solid transparent;
+    border-left: 2px solid var(--primary-blue);
+    border-right: 2px solid var(--primary-blue);
+    border-radius: 50%;
+    animation: spinLeft 3s linear infinite;
+    filter: drop-shadow(0 0 5px var(--primary-blue));
+}
+
+/* Center Glowing Hexagon */
+.core-hexagon {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: #ffffff;
+    /* CSS Polygon for Hexagon Shape */
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    box-shadow: 0 0 15px #ffffff;
+    animation: hexPulse 1.5s ease-in-out infinite alternate;
+    z-index: 10;
+}
+
+/* --- KEYFRAMES --- */
+@keyframes radarSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes spinLeft {
+    0% { transform: rotate(360deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes hexPulse {
+    0% { 
+        transform: scale(0.9); 
+        background: var(--primary-blue);
+        filter: drop-shadow(0 0 10px var(--primary-blue));
+    }
+    100% { 
+        transform: scale(1.1); 
+        background: #ffffff;
+        filter: drop-shadow(0 0 20px #ffffff) drop-shadow(0 0 30px var(--primary-blue));
+    }
+}
+
+/* LEFT PANEL — CHAT LOGS SIDEBAR */
+.left-panel-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1;
+}
+
+.sys-monitor-compact {
+    font-size: 0.78rem;
+    line-height: 1.6;
+}
+
+.sys-monitor-compact p {
+    margin-bottom: 2px;
+}
+
+/* --- New Chat Button --- */
+.new-chat-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    background: rgba(0, 243, 255, 0.04);
+    border: 1px solid rgba(0, 243, 255, 0.25);
+    border-radius: 4px;
+    color: var(--primary-blue);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+.new-chat-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.08), transparent);
+    transition: left 0.5s ease;
+}
+
+.new-chat-button:hover {
+    background: rgba(0, 243, 255, 0.1);
+    border-color: rgba(0, 243, 255, 0.6);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15), inset 0 0 15px rgba(0, 243, 255, 0.05);
+    transform: translateY(-1px);
+}
+
+.new-chat-button:hover::before {
+    left: 100%;
+}
+
+.new-chat-button:active {
+    transform: translateY(0);
+    box-shadow: 0 0 8px rgba(0, 243, 255, 0.2);
+}
+
+/* --- Chat Sessions Container --- */
+.chat-sessions-container {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 2px;
+}
+
+/* --- Individual Chat Session Card --- */
+.chat-session-card {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-left: 3px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-session-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0, 243, 255, 0.06), transparent);
+    transition: width 0.3s ease;
+}
+
+.chat-session-card:hover {
+    background: rgba(0, 243, 255, 0.04);
+    border-color: rgba(0, 243, 255, 0.15);
+    border-left-color: rgba(0, 243, 255, 0.4);
+    transform: translateX(3px);
+}
+
+.chat-session-card:hover::before {
+    width: 100%;
+}
+
+/* Active conversation highlight */
+.chat-session-card.active {
+    background: rgba(0, 243, 255, 0.06);
+    border-left-color: var(--primary-blue);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.08);
+}
+
+.chat-session-card.active .session-title {
+    color: var(--primary-blue);
+    text-shadow: 0 0 5px rgba(0, 243, 255, 0.3);
+}
+
+/* Session Info */
+.session-info {
+    flex: 1;
+    min-width: 0; /* Allow text truncation */
+    cursor: pointer;
+}
+
+.session-title {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+    line-height: 1.3;
+}
+
+.session-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+}
+
+.session-time {
+    opacity: 0.7;
+}
+
+.session-count {
+    opacity: 0.5;
+}
+
+/* Delete Button */
+.session-delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    color: var(--text-muted);
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 6px;
+}
+
+.chat-session-card:hover .session-delete-btn {
+    opacity: 0.6;
+}
+
+.session-delete-btn:hover {
+    opacity: 1 !important;
+    color: var(--danger-red);
+    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+/* Sidebar Section Title */
+.sidebar-section-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--primary-blue);
+    text-shadow: 0 0 5px rgba(0, 243, 255, 0.3);
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+/* Compact Active Tasks */
+.active-tasks-compact {
+    list-style: none;
+    padding: 0;
+    font-size: 0.75rem;
+    line-height: 1.8;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.active-tasks-compact li {
+    padding: 2px 0;
+    opacity: 0.85;
+}
+
+/* VOICE CHAT BUTTON */
+.voice-chat-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    background: rgba(0, 243, 255, 0.04);
+    border: 1px solid rgba(0, 243, 255, 0.25);
+    border-radius: 50%;
+    color: var(--primary-blue);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.voice-chat-btn:hover {
+    background: rgba(0, 243, 255, 0.1);
+    border-color: rgba(0, 243, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.voice-chat-btn:active {
+    transform: scale(0.95);
+}
+
+/* Recording Pulse Ring (hidden by default) */
+.recording-pulse {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--recording-red);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+/* Recording State */
+.voice-chat-btn.recording {
+    background: rgba(255, 45, 85, 0.15);
+    border-color: var(--recording-red);
+    color: var(--recording-red);
+    box-shadow: 0 0 20px rgba(255, 45, 85, 0.3);
+    animation: voiceBtnPulse 1.5s ease-in-out infinite;
+}
+
+.voice-chat-btn.recording .recording-pulse {
+    opacity: 1;
+    animation: recordingRing 1.5s ease-out infinite;
+}
+
+.voice-chat-btn.recording .mic-icon {
+    animation: micBounce 0.8s ease-in-out infinite alternate;
+}
+
+/* Unsupported State */
+.voice-chat-btn.voice-unsupported {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: rgba(100, 116, 139, 0.2);
+}
+
+/* Voice Active Indicator in Chat */
+.voice-active-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    background: rgba(255, 45, 85, 0.06);
+    border: 1px solid rgba(255, 45, 85, 0.2);
+    border-radius: 4px;
+    font-size: 0.78rem;
+    color: var(--recording-red);
+    letter-spacing: 1px;
+    animation: voiceIndicatorFade 2s ease-in-out infinite;
+}
+
+.recording-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--recording-red);
+    border-radius: 50%;
+    animation: recordingDotBlink 1s ease-in-out infinite;
+    box-shadow: 0 0 8px var(--recording-red);
+    flex-shrink: 0;
+}
+
+/* Loading Dots Animation */
+.loading-dots::after {
+    content: '';
+    animation: loadingDots 1.5s steps(4, end) infinite;
+}
+
+@keyframes loadingDots {
+    0%   { content: ''; }
+    25%  { content: '.'; }
+    50%  { content: '..'; }
+    75%  { content: '...'; }
+    100% { content: ''; }
+}
+
+/* --- VOICE KEYFRAMES --- */
+@keyframes voiceBtnPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(255, 45, 85, 0.2); }
+    50% { box-shadow: 0 0 30px rgba(255, 45, 85, 0.4); }
+}
+
+@keyframes recordingRing {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+@keyframes micBounce {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.1); }
+}
+
+@keyframes recordingDotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes voiceIndicatorFade {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}

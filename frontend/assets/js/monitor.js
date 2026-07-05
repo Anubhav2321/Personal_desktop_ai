@@ -4,20 +4,52 @@
 // ==========================================
 
 const SystemMonitor = {
-    pollInterval: 5000, // 5 seconds
+    pollInterval: 30000, // 30 seconds (was 5s — caused CPU overload)
     timer: null,
     lastStats: null,
+    isPaused: false,
 
     async init() {
         // Initial fetch
         await this.fetchAndRender();
         // Start polling
+        this.startPolling();
+
+        // Pause polling when tab is hidden, resume when visible
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.pause();
+            } else {
+                this.resume();
+            }
+        });
+    },
+
+    startPolling() {
+        if (this.timer) clearInterval(this.timer);
         this.timer = setInterval(() => this.fetchAndRender(), this.pollInterval);
+        this.isPaused = false;
+    },
+
+    pause() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+        this.isPaused = true;
+    },
+
+    resume() {
+        if (this.isPaused) {
+            // Fetch immediately on resume, then restart interval
+            this.fetchAndRender();
+            this.startPolling();
+        }
     },
 
     async fetchAndRender() {
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/system/stats');
+            const response = await fetch('/api/system/stats');
             const data = await response.json();
 
             if (data.status === 'ok') {

@@ -10,8 +10,12 @@ import webbrowser
 import shutil
 import json
 import ctypes
+import glob
 from datetime import datetime
 from pathlib import Path
+
+# Web search service for internet knowledge
+from ..services.web_search import search_web, get_web_info, get_news
 
 try:
     import psutil
@@ -53,7 +57,8 @@ def get_system_stats():
         return stats
 
     # CPU
-    stats["cpu_percent"] = psutil.cpu_percent(interval=0.5)
+    # interval=0 returns cached value (non-blocking) instead of blocking for 500ms
+    stats["cpu_percent"] = psutil.cpu_percent(interval=0)
 
     # RAM
     mem = psutil.virtual_memory()
@@ -143,7 +148,9 @@ def get_running_processes(limit=15):
 # ==========================================
 
 # Common Windows apps and their executable paths/commands
+# Includes traditional apps, UWP/Store apps, and protocol URIs
 WINDOWS_APPS = {
+    # --- Classic Windows Apps ---
     "calculator": "calc",
     "calc": "calc",
     "notepad": "notepad",
@@ -171,38 +178,149 @@ WINDOWS_APPS = {
     "magnifier": "magnify",
     "on-screen keyboard": "osk",
     "remote desktop": "mstsc",
+    "clock": "ms-clock:",
+    "alarm": "ms-clock:",
+    "maps": "bingmaps:",
+    "mail": "outlookmail:",
+    "calendar": "outlookcal:",
+    "photos": "ms-photos:",
+    "camera": "microsoft.windows.camera:",
+    "store": "ms-windows-store:",
+    "microsoft store": "ms-windows-store:",
+    "feedback hub": "feedback-hub:",
+    "xbox": "xbox:",
+    
+    # --- Browsers ---
+    "chrome": "chrome",
+    "google chrome": "chrome",
+    "firefox": "firefox",
+    "mozilla firefox": "firefox",
+    "edge": "msedge",
+    "microsoft edge": "msedge",
+    "brave": "brave",
+    "opera": "opera",
+    
+    # --- Communication / Social (UWP protocol URIs) ---
+    "whatsapp": "whatsapp:",
+    "telegram": "tg:",
+    "teams": "msteams:",
+    "microsoft teams": "msteams:",
+    "zoom": "zoommtg:",
+    "skype": "skype:",
+    
+    # --- Dev Tools ---
+    "vs code": "code",
+    "vscode": "code",
+    "visual studio code": "code",
+    "visual studio": "devenv",
+    "git bash": "git-bash",
+    "postman": "postman",
+    
+    # --- Media ---
+    "spotify": "spotify:",
+    "vlc": "vlc",
+    "itunes": "itunes",
+    
+    # --- Productivity ---
+    "word": "winword",
+    "microsoft word": "winword",
+    "excel": "excel",
+    "microsoft excel": "excel",
+    "powerpoint": "powerpnt",
+    "microsoft powerpoint": "powerpnt",
+    "onenote": "onenote:",
+    "outlook": "outlook",
+    
+    # --- Gaming ---
+    "steam": "steam:",
+    "discord": "discord:",
+    "epic games": "com.epicgames.launcher:",
+    
+    # --- AI Apps ---
+    "chatgpt": "chatgpt:",
+    "copilot": "ms-copilot:",
+    "microsoft copilot": "ms-copilot:",
 }
 
+
+def _search_start_menu(app_name):
+    """Search Windows Start Menu shortcuts for an app by name."""
+    search_dirs = [
+        os.path.join(os.environ.get('APPDATA', ''), r'Microsoft\Windows\Start Menu\Programs'),
+        r'C:\ProgramData\Microsoft\Windows\Start Menu\Programs',
+    ]
+    
+    app_lower = app_name.lower()
+    
+    for search_dir in search_dirs:
+        if not os.path.isdir(search_dir):
+            continue
+        # Walk the directory tree looking for .lnk files
+        for root, dirs, files in os.walk(search_dir):
+            for f in files:
+                if f.lower().endswith('.lnk') and app_lower in f.lower():
+                    return os.path.join(root, f)
+    
+    return None
+
+
+def _search_uwp_apps(app_name):
+    """Search installed UWP/Store apps using PowerShell."""
+    try:
+        result = subprocess.run(
+            ['powershell', '-Command',
+             f'Get-StartApps | Where-Object {{$_.Name -like "*{app_name}*"}} | Select-Object -First 1 -ExpandProperty AppId'],
+            capture_output=True, text=True, timeout=8
+        )
+        app_id = result.stdout.strip()
+        if app_id:
+            return app_id
+    except Exception:
+        pass
+    return None
+
+
 def open_application(app_name):
-    """Open a Windows application by name."""
+    """Open a Windows application by name. Supports classic apps, UWP/Store apps, and protocol URIs."""
     app_lower = app_name.lower().strip()
     
-    # Check known apps
+    # 1. Check known apps dictionary
     if app_lower in WINDOWS_APPS:
         cmd = WINDOWS_APPS[app_lower]
         try:
-            if cmd.startswith("ms-"):
-                os.system(f'start {cmd}')
+            if cmd.endswith(':'):  # Protocol URI (ms-settings:, whatsapp:, spotify:, etc.)
+                os.system(f'start "" "{cmd}"')
             else:
                 subprocess.Popen(cmd, shell=True)
             return f"Successfully launched {app_name}."
         except Exception as e:
-            return f"Failed to open {app_name}: {str(e)}"
+            # Fall through to smart discovery
+            pass
     
-    # Try to open VS Code specifically
-    if any(term in app_lower for term in ["vs code", "vscode", "visual studio code"]):
+    # 2. Search Start Menu shortcuts
+    shortcut = _search_start_menu(app_name)
+    if shortcut:
         try:
-            subprocess.Popen("code", shell=True)
-            return "Successfully launched Visual Studio Code."
+            os.startfile(shortcut)
+            return f"Successfully launched {app_name} (found in Start Menu)."
         except Exception:
-            return "VS Code not found. Make sure it's installed and in your PATH."
+            pass
     
-    # Try to open by searching Windows Start Menu
+    # 3. Search UWP/Store apps via PowerShell Get-StartApps
+    uwp_id = _search_uwp_apps(app_name)
+    if uwp_id:
+        try:
+            subprocess.Popen(f'explorer shell:AppsFolder\\{uwp_id}', shell=True)
+            return f"Successfully launched {app_name} (Windows Store app)."
+        except Exception:
+            pass
+    
+    # 4. Final fallback — try direct command
     try:
         subprocess.Popen(f'start "" "{app_name}"', shell=True)
         return f"Attempting to launch {app_name}."
     except Exception as e:
-        return f"Could not find or open {app_name}: {str(e)}"
+        return f"Could not find or open '{app_name}'. Please make sure it is installed."
 
 
 # ==========================================
@@ -532,6 +650,11 @@ ACTION_REGISTRY = {
     "search_youtube": search_youtube,
     "open_youtube": open_youtube,
     "play_youtube": play_on_youtube,
+    
+    # Internet knowledge (NEW — AI can pull data from the web)
+    "web_search": search_web,
+    "get_web_info": get_web_info,
+    "get_news": get_news,
     
     # File operations
     "create_file": create_file,

@@ -6,3 +6,6 @@ python-dotenv
 pydantic
 psutil
 pyautogui
+duckduckgo-search
+beautifulsoup4
+httpx

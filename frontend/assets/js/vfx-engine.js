@@ -57,6 +57,7 @@ const VFX = {
     particles: [],
     mouseX: 0,
     mouseY: 0,
+    animationRunning: true,
 
     initParticles() {
         const canvas = document.getElementById('particle-canvas');
@@ -67,7 +68,7 @@ const VFX = {
         canvas.height = window.innerHeight;
 
         // Create particles
-        const particleCount = Math.min(80, Math.floor(window.innerWidth / 20));
+        const particleCount = Math.min(40, Math.floor(window.innerWidth / 40));
         for (let i = 0; i < particleCount; i++) {
             this.particles.push({
                 x: Math.random() * canvas.width,
@@ -92,8 +93,20 @@ const VFX = {
             canvas.height = window.innerHeight;
         });
 
+        // Pause/resume animation when tab visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.animationRunning = false;
+            } else {
+                this.animationRunning = true;
+                animate();
+            }
+        });
+
         // Animation loop
         const animate = () => {
+            if (!this.animationRunning) return; // Stop loop when hidden
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             this.particles.forEach((p, i) => {
@@ -128,17 +141,17 @@ const VFX = {
                 ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, ${p.opacity})`;
                 ctx.fill();
 
-                // Draw connections
+                // Draw connections (reduced distance for performance)
                 for (let j = i + 1; j < this.particles.length; j++) {
                     const p2 = this.particles[j];
                     const d = Math.sqrt(
                         (p.x - p2.x) ** 2 + (p.y - p2.y) ** 2
                     );
-                    if (d < 100) {
+                    if (d < 70) {
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = `hsla(190, 100%, 70%, ${0.06 * (1 - d / 100)})`;
+                        ctx.strokeStyle = `hsla(190, 100%, 70%, ${0.06 * (1 - d / 70)})`;
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
                     }
@@ -200,7 +213,7 @@ const VFX = {
         document.body.appendChild(container);
 
         const chars = '01アイウエオカキクケコ>_{}[]=/\\<>';
-        const streamCount = Math.floor(window.innerWidth / 60);
+        const streamCount = Math.floor(window.innerWidth / 120);
 
         for (let i = 0; i < streamCount; i++) {
             const stream = document.createElement('div');
